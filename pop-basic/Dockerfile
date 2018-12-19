@@ -2,6 +2,16 @@ FROM hoteltonight/ruby-jemalloc:2.5.1-stretch
 
 RUN apt-get update && apt-get install -y nodejs mysql-client vim wget --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
+RUN wget https://s3-ap-northeast-1.amazonaws.com/pops-basicinc/mecab/mecab-0.996.tar.gz && \
+   tar xvzf mecab-0.996.tar.gz && \
+   cd mecab-0.996 && \
+   ./configure && \
+   make -j4 && \
+   make install
+RUN apt-get update && apt-get install -y mecab-ipadic-utf8
+
+ENV MECAB_PATH "/usr/local/lib/libmecab.so"
+
 RUN groupadd --gid 1000 node \
   && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
